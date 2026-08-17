@@ -9,7 +9,7 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => '保质期';
+  String get appTitle => 'AI保质期提醒';
 
   @override
   String errorWithMessage(String message) {
@@ -47,10 +47,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsTitle => '设置';
 
   @override
+  String get layoutGridTooltip => '网格视图';
+
+  @override
+  String get layoutListTooltip => '列表视图';
+
+  @override
   String get preparingPhoto => '正在准备照片…';
 
   @override
   String get imageCompressFailed => '无法压缩图片。';
+
+  @override
+  String get cameraPermissionDenied => '相机权限已关闭。请在设置中开启后再拍摄。';
+
+  @override
+  String get photoPermissionDenied => '照片访问权限已关闭。请在设置中开启后再选择。';
+
+  @override
+  String get openSettings => '设置';
 
   @override
   String get analyzingPhoto => '正在识别食品和保质期…';

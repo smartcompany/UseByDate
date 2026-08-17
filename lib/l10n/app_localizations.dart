@@ -105,7 +105,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Use By Date'**
+  /// **'AI Expiry Reminder'**
   String get appTitle;
 
   /// No description provided for @errorWithMessage.
@@ -174,6 +174,18 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settingsTitle;
 
+  /// No description provided for @layoutGridTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid view'**
+  String get layoutGridTooltip;
+
+  /// No description provided for @layoutListTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'List view'**
+  String get layoutListTooltip;
+
   /// No description provided for @preparingPhoto.
   ///
   /// In en, this message translates to:
@@ -185,6 +197,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t compress the image.'**
   String get imageCompressFailed;
+
+  /// No description provided for @cameraPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera access is off. Turn it on in Settings to take photos.'**
+  String get cameraPermissionDenied;
+
+  /// No description provided for @photoPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo library access is off. Turn it on in Settings to choose photos.'**
+  String get photoPermissionDenied;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get openSettings;
 
   /// No description provided for @analyzingPhoto.
   ///

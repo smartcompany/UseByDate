@@ -13,13 +13,13 @@ class _TitleParts {
 _TitleParts _splitAppTitle(String title, Locale locale) {
   switch (locale.languageCode) {
     case 'ko':
-      return const _TitleParts(lead: '식품', emphasis: '유통기한');
+      return const _TitleParts(lead: 'AI', emphasis: '유통기한 알리미');
     case 'en':
-      return const _TitleParts(lead: 'Use By', emphasis: 'Date');
+      return const _TitleParts(lead: 'AI', emphasis: 'Expiry Reminder');
     case 'ja':
-      return const _TitleParts(lead: '食品の', emphasis: '賞味期限');
+      return const _TitleParts(lead: 'AI', emphasis: '賞味期限リマインダー');
     case 'zh':
-      return const _TitleParts(lead: '食品', emphasis: '保质期');
+      return const _TitleParts(lead: 'AI', emphasis: '保质期提醒');
     default:
       final parts = title.trim().split(RegExp(r'\s+'));
       if (parts.length >= 2) {
@@ -63,8 +63,8 @@ class BrandTitle extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                AppTheme.olive,
-                AppTheme.olive.withValues(alpha: 0.45),
+                AppTheme.coral,
+                AppTheme.coralDeep.withValues(alpha: 0.85),
               ],
             ),
           ),

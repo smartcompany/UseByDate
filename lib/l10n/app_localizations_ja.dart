@@ -9,7 +9,7 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appTitle => '賞味期限';
+  String get appTitle => 'AI賞味期限リマインダー';
 
   @override
   String errorWithMessage(String message) {
@@ -47,10 +47,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsTitle => '設定';
 
   @override
+  String get layoutGridTooltip => 'グリッド表示';
+
+  @override
+  String get layoutListTooltip => 'リスト表示';
+
+  @override
   String get preparingPhoto => '写真を準備しています…';
 
   @override
   String get imageCompressFailed => '画像を圧縮できませんでした。';
+
+  @override
+  String get cameraPermissionDenied => 'カメラへのアクセスがオフです。設定で許可してください。';
+
+  @override
+  String get photoPermissionDenied => '写真へのアクセスがオフです。設定で許可してください。';
+
+  @override
+  String get openSettings => '設定';
 
   @override
   String get analyzingPhoto => '食品と期限を探しています…';

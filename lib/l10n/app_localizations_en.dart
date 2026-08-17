@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Use By Date';
+  String get appTitle => 'AI Expiry Reminder';
 
   @override
   String errorWithMessage(String message) {
@@ -48,10 +48,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
+  String get layoutGridTooltip => 'Grid view';
+
+  @override
+  String get layoutListTooltip => 'List view';
+
+  @override
   String get preparingPhoto => 'Preparing your photo…';
 
   @override
   String get imageCompressFailed => 'Couldn\'t compress the image.';
+
+  @override
+  String get cameraPermissionDenied =>
+      'Camera access is off. Turn it on in Settings to take photos.';
+
+  @override
+  String get photoPermissionDenied =>
+      'Photo library access is off. Turn it on in Settings to choose photos.';
+
+  @override
+  String get openSettings => 'Settings';
 
   @override
   String get analyzingPhoto => 'Looking for foods and expiry dates…';

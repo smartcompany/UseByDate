@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Use By Date",
+  "appTitle": "AI Expiry Reminder",
   "errorWithMessage": "Error: {message}",
   "@errorWithMessage": {
     "placeholders": {
@@ -17,8 +17,13 @@
   "album": "Album",
   "settingsTooltip": "Settings",
   "settingsTitle": "Settings",
+  "layoutGridTooltip": "Grid view",
+  "layoutListTooltip": "List view",
   "preparingPhoto": "Preparing your photo…",
   "imageCompressFailed": "Couldn't compress the image.",
+  "cameraPermissionDenied": "Camera access is off. Turn it on in Settings to take photos.",
+  "photoPermissionDenied": "Photo library access is off. Turn it on in Settings to choose photos.",
+  "openSettings": "Settings",
   "analyzingPhoto": "Looking for foods and expiry dates…",
   "noItemsDetected": "No foods detected. Add items manually.",
   "itemsFoundCount": "{count} items found. Edit if needed.",

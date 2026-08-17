@@ -1,5 +1,5 @@
 /* Localized Info.plist strings — English */
-"CFBundleDisplayName" = "Use By Date";
+"CFBundleDisplayName" = "AI Expiry Reminder";
 "NSCameraUsageDescription" = "Camera access is needed to photograph food packages so we can read or estimate expiry dates.";
 "NSPhotoLibraryUsageDescription" = "Photo library access is needed to choose food package photos from your albums.";
 "NSPhotoLibraryAddUsageDescription" = "Photo library access is needed to save food photos to your device when that option is enabled in Settings.";

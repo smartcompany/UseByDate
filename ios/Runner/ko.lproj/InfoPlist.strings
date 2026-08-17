@@ -1,5 +1,5 @@
 /* Localized Info.plist strings — Korean */
-"CFBundleDisplayName" = "유통기한";
+"CFBundleDisplayName" = "AI 유통기한 알리미";
 "NSCameraUsageDescription" = "식품 포장을 촬영해 유통기한을 읽거나 추정하려면 카메라가 필요합니다.";
 "NSPhotoLibraryUsageDescription" = "앨범에서 식품 사진을 선택하려면 사진 라이브러리 접근이 필요합니다.";
 "NSPhotoLibraryAddUsageDescription" = "설정에서 해당 옵션을 켠 경우, 촬영한 식품 사진을 기기 사진 앱에도 저장하려면 사진 라이브러리 접근이 필요합니다.";

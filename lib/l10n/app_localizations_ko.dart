@@ -9,7 +9,7 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => '유통기한';
+  String get appTitle => 'AI 유통기한 알리미';
 
   @override
   String errorWithMessage(String message) {
@@ -47,10 +47,25 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsTitle => '설정';
 
   @override
+  String get layoutGridTooltip => '격자 보기';
+
+  @override
+  String get layoutListTooltip => '목록 보기';
+
+  @override
   String get preparingPhoto => '사진을 준비하고 있어요…';
 
   @override
   String get imageCompressFailed => '이미지를 압축하지 못했어요.';
+
+  @override
+  String get cameraPermissionDenied => '카메라 권한이 꺼져 있어요. 설정에서 켜 주세요.';
+
+  @override
+  String get photoPermissionDenied => '사진 접근 권한이 꺼져 있어요. 설정에서 켜 주세요.';
+
+  @override
+  String get openSettings => '설정';
 
   @override
   String get analyzingPhoto => '식품과 유통기한을 찾고 있어요…';

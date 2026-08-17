@@ -14,6 +14,7 @@ import 'package:use_by_date/services/product_repository.dart';
 import 'package:use_by_date/services/reminder_settings_service.dart';
 import 'package:use_by_date/theme/app_theme.dart';
 import 'package:use_by_date/widgets/brand_title.dart';
+import 'package:use_by_date/widgets/product_grid_tile.dart';
 import 'package:use_by_date/widgets/product_list_tile.dart';
 import 'package:use_by_date/widgets/swipe_reveal_delete.dart';
 
@@ -80,7 +81,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (!allowed || !mounted) return;
 
       _pickFlowOverlay.hide();
-      final pickedPath = await PhotoPickService.pickCameraRaw();
+      final pickedPath = await PhotoPickService.pickCameraRaw(context: context);
       if (pickedPath == null || !mounted) return;
 
       _pickFlowOverlay.show(l10n.preparingPhoto);
@@ -153,6 +154,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final productsAsync = ref.watch(productsProvider);
+    final layoutAsync = ref.watch(homeLayoutProvider);
+    final layout = layoutAsync.value ?? HomeLayoutMode.list;
     final settings = ref.watch(reminderSettingsProvider).value;
     final notifyDays =
         settings?.notifyDaysBefore ?? ReminderSettingsSpec.notifyDaysBefore;
@@ -160,11 +163,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final bottomPad = _bottomBarHeight + bottomInset + 20;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         titleSpacing: 20,
         toolbarHeight: 72,
         title: BrandTitle(title: l10n.appTitle),
         actions: [
+          IconButton(
+            tooltip: layout == HomeLayoutMode.grid
+                ? l10n.layoutListTooltip
+                : l10n.layoutGridTooltip,
+            onPressed: () => ref.read(homeLayoutProvider.notifier).toggle(),
+            icon: Icon(
+              layout == HomeLayoutMode.grid
+                  ? Icons.view_agenda_outlined
+                  : Icons.grid_view_rounded,
+            ),
+          ),
           IconButton(
             tooltip: l10n.settingsTooltip,
             onPressed: () {
@@ -177,7 +192,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const SizedBox(width: 4),
         ],
       ),
-      body: SafeArea(
+      body: DecoratedBox(
+        decoration: const BoxDecoration(gradient: AppTheme.homeGradient),
+        child: SafeArea(
         bottom: false,
         child: Stack(
           children: [
@@ -191,6 +208,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   return Padding(
                     padding: EdgeInsets.only(bottom: bottomPad),
                     child: const _EmptyState(),
+                  );
+                }
+                if (layout == HomeLayoutMode.grid) {
+                  return GridView.builder(
+                    padding: EdgeInsets.fromLTRB(16, 0, 16, bottomPad),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 20,
+                      crossAxisSpacing: 12,
+                      childAspectRatio: 0.72,
+                    ),
+                    itemCount: products.length,
+                    itemBuilder: (context, index) {
+                      final item = products[index];
+                      return ProductGridTile(
+                        item: item,
+                        notifyDaysBefore: notifyDays,
+                        onTap: () => _openDetail(item),
+                      );
+                    },
                   );
                 }
                 final grouped = _group(products, notifyDays);
@@ -221,7 +259,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       deleteLabel: l10n.delete,
                       onDelete: () => _confirmAndDelete(item),
                       child: ColoredBox(
-                        color: Theme.of(context).scaffoldBackgroundColor,
+                        color: AppTheme.background,
                         child: ProductListTile(
                           item: item,
                           notifyDaysBefore: notifyDays,
@@ -283,6 +321,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
           ],
+        ),
         ),
       ),
     );
@@ -351,7 +390,7 @@ class _PhotosStyleBottomBar extends StatelessWidget {
   final String cameraTooltip;
   final String albumTooltip;
 
-  static const _railColor = Color(0xE61A1A1A);
+  static const _railColor = Color(0xE6C46842);
   static const _railHeight = 46.0;
   static const _sideButtonSize = 40.0;
   static const _sideIconSize = 20.0;
@@ -395,20 +434,32 @@ class _PhotosStyleBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cameraButton = Material(
-      color: AppTheme.olive,
       elevation: 8,
-      shadowColor: Colors.black45,
+      shadowColor: AppTheme.coralDeep.withValues(alpha: 0.45),
       shape: const CircleBorder(),
       clipBehavior: Clip.antiAlias,
-      child: SizedBox(
-        width: _cameraButtonSize,
-        height: _cameraButtonSize,
-        child: IconButton(
-          tooltip: cameraTooltip,
-          onPressed: onCamera,
-          iconSize: _cameraIconSize,
-          padding: EdgeInsets.zero,
-          icon: const Icon(Icons.photo_camera_rounded, color: Colors.white),
+      child: Ink(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppTheme.coral,
+              AppTheme.coralDeep,
+            ],
+          ),
+        ),
+        child: SizedBox(
+          width: _cameraButtonSize,
+          height: _cameraButtonSize,
+          child: IconButton(
+            tooltip: cameraTooltip,
+            onPressed: onCamera,
+            iconSize: _cameraIconSize,
+            padding: EdgeInsets.zero,
+            icon: const Icon(Icons.photo_camera_rounded, color: Colors.white),
+          ),
         ),
       ),
     );
@@ -458,18 +509,18 @@ class _EmptyState extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.4,
                   height: 1.3,
-                  color: AppTheme.ink.withValues(alpha: 0.88),
+                  color: AppTheme.ink.withValues(alpha: 0.9),
                 ),
               ),
             ),
             const SizedBox(height: 18),
             _EmptyHomePrompt(
               icon: Icons.school_rounded,
-              iconColor: AppTheme.olive,
+              iconColor: AppTheme.teal,
               child: Text(
                 l10n.emptyHomeBody,
                 style: textTheme.titleMedium?.copyWith(
-                  color: AppTheme.olive,
+                  color: AppTheme.coralDeep,
                   fontWeight: FontWeight.w700,
                   height: 1.45,
                   letterSpacing: -0.15,
@@ -558,13 +609,13 @@ class _EmptyHomeStep extends StatelessWidget {
           child: Text(
             number,
             style: textTheme.titleMedium?.copyWith(
-              color: AppTheme.olive,
+              color: AppTheme.coral,
               fontWeight: FontWeight.w800,
               height: 1.3,
             ),
           ),
         ),
-        Icon(icon, size: 22, color: AppTheme.olive),
+        Icon(icon, size: 22, color: AppTheme.coralDeep),
         const SizedBox(width: 12),
         Expanded(
           child: Text(

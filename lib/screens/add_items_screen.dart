@@ -255,26 +255,24 @@ class _AddItemsScreenState extends ConsumerState<AddItemsScreen> {
           ),
           const SizedBox(height: 12),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _analyzing ? null : _addFromCamera,
-                  child: Text(l10n.camera),
-                ),
+              _PhotoActionIcon(
+                icon: Icons.photo_camera_outlined,
+                tooltip: l10n.camera,
+                onPressed: _analyzing ? null : _addFromCamera,
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _analyzing ? null : _addFromAlbum,
-                  child: Text(l10n.gallery),
-                ),
+              const SizedBox(width: 12),
+              _PhotoActionIcon(
+                icon: Icons.photo_library_outlined,
+                tooltip: l10n.gallery,
+                onPressed: _analyzing ? null : _addFromAlbum,
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _analyzing ? null : _scanAgain,
-                  child: Text(l10n.scanAgain),
-                ),
+              const SizedBox(width: 12),
+              _PhotoActionIcon(
+                icon: Icons.document_scanner_outlined,
+                tooltip: l10n.scanAgain,
+                onPressed: _analyzing ? null : _scanAgain,
               ),
             ],
           ),
@@ -325,6 +323,38 @@ class _AddItemsScreenState extends ConsumerState<AddItemsScreen> {
       case null:
         return '';
     }
+  }
+}
+
+class _PhotoActionIcon extends StatelessWidget {
+  const _PhotoActionIcon({
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onPressed != null;
+    return Material(
+      color: AppTheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: const BorderSide(color: AppTheme.hairline),
+      ),
+      child: IconButton(
+        tooltip: tooltip,
+        onPressed: onPressed,
+        icon: Icon(
+          icon,
+          color: enabled ? AppTheme.coralDeep : AppTheme.muted,
+        ),
+      ),
+    );
   }
 }
 

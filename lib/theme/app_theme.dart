@@ -1,16 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static const background = Color(0xFFFAF8F5);
-  static const ink = Color(0xFF1A1A1A);
-  static const olive = Color(0xFF2C3A2E);
-  static const muted = Color(0xFF6B6B66);
-  static const hairline = Color(0xFFE6E2DB);
-  static const surface = Color(0xFFFFFFFF);
-  static const expired = Color(0xFFB3261E);
-  static const today = Color(0xFFB45309);
-  static const soon = Color(0xFFC2410C);
+  // Warm kitchen palette — matches app icon (peach, coral, teal fish).
+  static const background = Color(0xFFFFF3E8);
+  static const backgroundDeep = Color(0xFFFCE4CC);
+  static const ink = Color(0xFF3D3028);
+  static const coral = Color(0xFFE06F48);
+  static const coralDeep = Color(0xFFC95A38);
+  static const teal = Color(0xFF5AABBB);
+  static const muted = Color(0xFF917A6C);
+  static const hairline = Color(0xFFF0DCC8);
+  static const surface = Color(0xFFFFFBF7);
+  static const expired = Color(0xFFC62828);
+  static const today = Color(0xFFD84315);
+  static const soon = Color(0xFFE65100);
+
+  /// Primary accent — kept as [olive] name for existing call sites.
+  static const olive = coral;
+
+  static const homeGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color(0xFFFFF8F2),
+      Color(0xFFFFF0E0),
+      Color(0xFFFCE8D2),
+    ],
+  );
+
+  /// Dark status-bar icons on the warm light backgrounds used across the app.
+  static const systemOverlayStyle = SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.light,
+    systemNavigationBarColor: background,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  );
 
   static ThemeData light() {
     final baseText = GoogleFonts.plusJakartaSansTextTheme();
@@ -55,16 +82,16 @@ class AppTheme {
         );
 
     final scheme = ColorScheme.light(
-      primary: olive,
+      primary: coral,
       onPrimary: surface,
-      secondary: olive,
+      secondary: teal,
       onSecondary: surface,
       surface: background,
       onSurface: ink,
       onSurfaceVariant: muted,
       outline: hairline,
       outlineVariant: hairline,
-      surfaceContainerHighest: const Color(0xFFF0EDE8),
+      surfaceContainerHighest: const Color(0xFFFCE8D4),
       error: expired,
       onError: surface,
     );
@@ -75,12 +102,13 @@ class AppTheme {
       scaffoldBackgroundColor: background,
       textTheme: textTheme,
       appBarTheme: AppBarTheme(
-        backgroundColor: background,
+        backgroundColor: Colors.transparent,
         foregroundColor: ink,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
         titleTextStyle: textTheme.titleLarge,
+        systemOverlayStyle: systemOverlayStyle,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -98,14 +126,14 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: olive, width: 1.4),
+          borderSide: const BorderSide(color: coral, width: 1.4),
         ),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: olive,
+          backgroundColor: coral,
           foregroundColor: surface,
           elevation: 0,
           textStyle: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
@@ -126,11 +154,11 @@ class AppTheme {
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: olive),
+        style: TextButton.styleFrom(foregroundColor: coral),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: const Color(0xFFF0EDE8),
-        selectedColor: olive.withValues(alpha: 0.12),
+        backgroundColor: const Color(0xFFFCE8D4),
+        selectedColor: coral.withValues(alpha: 0.14),
         labelStyle: textTheme.bodySmall?.copyWith(color: ink),
         side: BorderSide.none,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -146,6 +174,9 @@ class AppTheme {
         contentTextStyle: textTheme.bodyMedium?.copyWith(color: surface),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: coral,
       ),
     );
   }

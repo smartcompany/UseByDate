@@ -1,17 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import 'package:use_by_date/app_keys.dart';
 import 'package:use_by_date/l10n/app_localizations.dart';
 import 'package:use_by_date/screens/home_screen.dart';
 import 'package:use_by_date/screens/product_detail_screen.dart';
 import 'package:use_by_date/services/ad_settings.dart';
 import 'package:use_by_date/services/expiry_notification_service.dart';
 import 'package:use_by_date/theme/app_theme.dart';
-
-final navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +25,10 @@ Future<void> main() async {
   }
 
   await AdSettings.initialize();
+
+  if (!kIsWeb) {
+    SystemChrome.setSystemUIOverlayStyle(AppTheme.systemOverlayStyle);
+  }
 
   runApp(const ProviderScope(child: UseByDateApp()));
 }
@@ -70,6 +74,7 @@ class _UseByDateAppState extends State<UseByDateApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
+      scaffoldMessengerKey: scaffoldMessengerKey,
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       theme: AppTheme.light(),
       localizationsDelegates: const [
@@ -86,7 +91,10 @@ class _UseByDateAppState extends State<UseByDateApp> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _initNotifications(l10n);
         });
-        return child ?? const SizedBox.shrink();
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: AppTheme.systemOverlayStyle,
+          child: child ?? const SizedBox.shrink(),
+        );
       },
     );
   }
