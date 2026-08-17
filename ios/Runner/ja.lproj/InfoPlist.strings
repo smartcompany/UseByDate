@@ -1,0 +1,5 @@
+/* Localized Info.plist strings — Japanese */
+"CFBundleDisplayName" = "賞味期限";
+"NSCameraUsageDescription" = "食品パッケージを撮影して期限を読み取る、または推定するためにカメラへのアクセスが必要です。";
+"NSPhotoLibraryUsageDescription" = "アルバムから食品の写真を選ぶためにフォトライブラリへのアクセスが必要です。";
+"NSPhotoLibraryAddUsageDescription" = "設定でこのオプションをオンにした場合、撮影した食品写真を端末の写真アプリにも保存するためにフォトライブラリへのアクセスが必要です。";

@@ -1,0 +1,148 @@
+{
+  "@@locale": "en",
+  "appTitle": "Use By Date",
+  "errorWithMessage": "Error: {message}",
+  "@errorWithMessage": {
+    "placeholders": {
+      "message": {"type": "String"}
+    }
+  },
+  "emptyHomeTitle": "When does this expire?",
+  "emptyHomeBody": "Photo the package. We'll read the date or estimate it, then remind you.",
+  "emptyHomeStep1": "Photo one item or several together",
+  "emptyHomeStep2": "Check the name and expiry date",
+  "emptyHomeStep3": "Get a reminder on or before that day",
+  "emptyHomeCtaHint": "Start with the camera or album below",
+  "camera": "Camera",
+  "album": "Album",
+  "settingsTooltip": "Settings",
+  "settingsTitle": "Settings",
+  "preparingPhoto": "Preparing your photo…",
+  "imageCompressFailed": "Couldn't compress the image.",
+  "analyzingPhoto": "Looking for foods and expiry dates…",
+  "noItemsDetected": "No foods detected. Add items manually.",
+  "itemsFoundCount": "{count} items found. Edit if needed.",
+  "@itemsFoundCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "aiDetectFailed": "Recognition failed. You can add items manually.\n{error}",
+  "@aiDetectFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "addItemsTitle": "Review items",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "retake": "Retake",
+  "gallery": "Gallery",
+  "scanAgain": "Scan again",
+  "addPhoto": "Add photo",
+  "removePhoto": "Remove photo",
+  "photosCountLabel": "{count} of {max} photos",
+  "@photosCountLabel": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
+  "maxPhotosReached": "You can add up to {count} photos.",
+  "@maxPhotosReached": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "addItemManually": "Add item",
+  "itemNameLabel": "Name",
+  "itemNameHint": "e.g. Milk",
+  "expiryDateLabel": "Expiry date",
+  "noExpiryDate": "No date yet",
+  "pickExpiryDate": "Choose date",
+  "clearExpiryDate": "Clear date",
+  "sourcePrinted": "Printed date",
+  "sourceEstimated": "Estimated",
+  "sourceUser": "Edited",
+  "reasonLabel": "Why this date",
+  "addAtLeastOneItem": "Add at least one item with a name.",
+  "saveFailed": "Couldn't save: {error}",
+  "@saveFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "firstSaveHint": "Saved. You'll get a reminder before it expires.",
+  "sectionExpired": "Expired",
+  "sectionToday": "Today",
+  "sectionSoon": "Soon",
+  "sectionLater": "Later",
+  "sectionNoDate": "No date",
+  "daysLeft": "{count} days left",
+  "@daysLeft": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "expiredDaysAgo": "Expired {count} days ago",
+  "@expiredDaysAgo": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "expiresToday": "Expires today",
+  "expiresTomorrow": "Expires tomorrow",
+  "productDetailTitle": "Item",
+  "deleteProductTitle": "Delete item",
+  "deleteProductMessage": "Delete this item and its reminder?",
+  "productNotFound": "Item not found",
+  "notifyEnabledTitle": "Reminder",
+  "notifyEnabledSubtitle": "Notify on the reminder day",
+  "settingsNotifyDaysTitle": "Remind me",
+  "settingsNotifyDaysOnDay": "On the expiry day",
+  "settingsNotifyDaysBefore": "{count} days before",
+  "@settingsNotifyDaysBefore": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "settingsNotifyTimeTitle": "Reminder time",
+  "settingsSaveToAlbumTitle": "Save camera photos to gallery",
+  "settingsSaveToAlbumSubtitle": "Also keep shots in the device Photos / Gallery app",
+  "settingsNotificationsTitle": "Notifications",
+  "settingsNotificationsSubtitle": "Allow alerts so reminders can appear on time",
+  "notificationPermissionDenied": "Notifications are off. Turn them on in system settings to get reminders.",
+  "notificationTitle": "Use by today",
+  "notificationBodyOnDay": "{name} expires today.",
+  "@notificationBodyOnDay": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "notificationBodyBefore": "{name} expires in {count} days.",
+  "@notificationBodyBefore": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "count": {"type": "int"}
+    }
+  },
+  "photoAddAdTitle": "Watch an ad to add a food photo?",
+  "photoAddAdMessage": "A short ad appears every {count} times you successfully analyze a photo. Watch it to open the camera or album and add more foods.",
+  "@photoAddAdMessage": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "photoAddAdContinue": "Watch ad & add photo",
+  "photoAddAdTitleScan": "Watch an ad to scan again?",
+  "photoAddAdMessageScan": "A short ad appears every {count} successful photo analyses. Watch it to run AI expiry detection again on these photos.",
+  "@photoAddAdMessageScan": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "photoAddAdContinueScan": "Watch ad & scan again",
+  "photoAddAdCancel": "Cancel",
+  "photoAddAdLoading": "Loading ad…"
+}
