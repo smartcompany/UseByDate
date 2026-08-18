@@ -11,6 +11,13 @@ import 'package:use_by_date/services/reminder_settings_service.dart';
 
 typedef NotificationTapCallback = void Function(int productId);
 
+/// 백그라운드 알림 탭 핸들러 — top-level 함수이어야 함
+@pragma('vm:entry-point')
+void _handleBackgroundResponse(NotificationResponse response) {
+  // 백그라운드에서 탭 처리는 별도 isolate이므로 여기서는 최소 처리
+  debugPrint('[ExpiryNotificationService] background tap: ${response.payload}');
+}
+
 class ExpiryNotificationService {
   ExpiryNotificationService._();
   static final ExpiryNotificationService shared = ExpiryNotificationService._();
@@ -20,10 +27,10 @@ class ExpiryNotificationService {
 
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
+  bool _timeZoneReady = false;
 
   NotificationTapCallback? onTap;
   AppLocalizations? _l10n;
-  bool _initialized = false;
 
   Future<void> initialize({
     required AppLocalizations l10n,
@@ -31,24 +38,34 @@ class ExpiryNotificationService {
   }) async {
     _l10n = l10n;
     this.onTap = onTap;
-    if (_initialized) return;
 
-    tz_data.initializeTimeZones();
-    final timezoneName = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timezoneName));
+    if (!_timeZoneReady) {
+      tz_data.initializeTimeZones();
+      final timezoneName = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(timezoneName.identifier));
+      _timeZoneReady = true;
+      debugPrint('[Notify] timezone initialized=${timezoneName.identifier}');
+    }
 
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const ios = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
+      defaultPresentAlert: true,
+      defaultPresentBanner: true,
+      defaultPresentList: true,
+      defaultPresentBadge: true,
+      defaultPresentSound: true,
     );
 
-    await _plugin.initialize(
-      const InitializationSettings(android: android, iOS: ios),
+    // iOS UNUserNotificationCenter delegate 등록 — 매 앱 기동 시 호출 필요
+    final ok = await _plugin.initialize(
+      settings: const InitializationSettings(android: android, iOS: ios),
       onDidReceiveNotificationResponse: _handleResponse,
+      onDidReceiveBackgroundNotificationResponse: _handleBackgroundResponse,
     );
-    _initialized = true;
+    debugPrint('[Notify] initialize result=$ok');
   }
 
   void updateLocalizations(AppLocalizations l10n) {
@@ -60,6 +77,7 @@ class ExpiryNotificationService {
         AndroidFlutterLocalNotificationsPlugin>();
     if (android != null) {
       final granted = await android.requestNotificationsPermission();
+      debugPrint('[Notify] Android permission granted=$granted');
       if (granted != true) return false;
     }
 
@@ -71,13 +89,27 @@ class ExpiryNotificationService {
         badge: true,
         sound: true,
       );
+      debugPrint('[Notify] iOS permission granted=$granted');
       if (granted != true) return false;
     }
     return true;
   }
 
+  /// 현재 OS에 예약된 알림 목록을 로그로 출력합니다.
+  Future<void> logPendingNotifications({String reason = 'snapshot'}) async {
+    final pending = await _plugin.pendingNotificationRequests();
+    debugPrint('[Notify] pendingCount=${pending.length} reason=$reason');
+    for (final n in pending) {
+      debugPrint('[Notify] pending id=${n.id} title="${n.title}" body="${n.body}"');
+    }
+  }
+
   Future<int?> launchProductId() async {
     final launch = await _plugin.getNotificationAppLaunchDetails();
+    debugPrint(
+      '[Notify] launchDetails didLaunch=${launch?.didNotificationLaunchApp} '
+      'payload=${launch?.notificationResponse?.payload}',
+    );
     if (launch?.didNotificationLaunchApp != true) return null;
     return _parseProductId(launch?.notificationResponse?.payload);
   }
@@ -87,28 +119,47 @@ class ExpiryNotificationService {
     ReminderSettings settings,
   ) async {
     await cancelForProduct(product.id);
-    if (!product.notifyEnabled) return;
+    if (!product.notifyEnabled) {
+      debugPrint('[Notify] id=${product.id} notifyEnabled=false, skipped');
+      return;
+    }
 
     final expiry = parseIsoDate(product.expiryDate);
-    if (expiry == null) return;
+    if (expiry == null) {
+      debugPrint('[Notify] id=${product.id} expiryDate parse failed: "${product.expiryDate}"');
+      return;
+    }
 
     final fireDate = DateTime(
       expiry.year,
       expiry.month,
       expiry.day,
     ).subtract(Duration(days: settings.notifyDaysBefore));
-    final scheduled = tz.TZDateTime(
+    // 로컬 시간 기준으로 예약 (기기 시간대 변경 고려 불필요)
+    final scheduled = tz.TZDateTime.from(
+      DateTime(
+        fireDate.year,
+        fireDate.month,
+        fireDate.day,
+        settings.notifyHour,
+        settings.notifyMinute,
+      ),
       tz.local,
-      fireDate.year,
-      fireDate.month,
-      fireDate.day,
-      settings.notifyHour,
-      settings.notifyMinute,
     );
-    if (scheduled.isBefore(tz.TZDateTime.now(tz.local))) return;
+    final now = tz.TZDateTime.now(tz.local);
+    debugPrint('[Notify] id=${product.id} "${product.name}" '
+        'expiry=${product.expiryDate} daysBefore=${settings.notifyDaysBefore} '
+        'scheduled=$scheduled now=$now isPast=${scheduled.isBefore(now)}');
+    if (scheduled.isBefore(now)) {
+      debugPrint('[Notify] id=${product.id} scheduled is in the past → skipped');
+      return;
+    }
 
     final l10n = _l10n;
-    if (l10n == null) return;
+    if (l10n == null) {
+      debugPrint('[Notify] l10n not set, skipped');
+      return;
+    }
 
     final body = settings.notifyDaysBefore == 0
         ? l10n.notificationBodyOnDay(product.name)
@@ -116,11 +167,11 @@ class ExpiryNotificationService {
 
     try {
       await _plugin.zonedSchedule(
-        product.id,
-        l10n.notificationTitle,
-        body,
-        scheduled,
-        NotificationDetails(
+        id: product.id,
+        title: l10n.notificationTitle,
+        body: body,
+        scheduledDate: scheduled,
+        notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             _channelId,
             _channelName,
@@ -128,19 +179,27 @@ class ExpiryNotificationService {
             importance: Importance.high,
             priority: Priority.high,
           ),
-          iOS: const DarwinNotificationDetails(),
+          iOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBanner: true,
+            presentList: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         payload: product.id.toString(),
       );
+      debugPrint('[Notify] id=${product.id} zonedSchedule OK at $scheduled');
+      await logPendingNotifications(reason: 'after schedule ${product.id}');
     } catch (error, stackTrace) {
-      debugPrint('[ExpiryNotificationService] schedule failed: $error');
+      debugPrint('[Notify] schedule failed: $error');
       debugPrint('$stackTrace');
     }
   }
 
   Future<void> cancelForProduct(int productId) {
-    return _plugin.cancel(productId);
+    return _plugin.cancel(id: productId);
   }
 
   Future<void> rescheduleAll(
@@ -151,9 +210,14 @@ class ExpiryNotificationService {
     for (final product in products) {
       await scheduleForProduct(product, settings);
     }
+    await logPendingNotifications(reason: 'after rescheduleAll');
   }
 
   void _handleResponse(NotificationResponse response) {
+    debugPrint(
+      '[Notify] response type=${response.notificationResponseType} '
+      'payload=${response.payload}',
+    );
     final id = _parseProductId(response.payload);
     if (id == null) return;
     onTap?.call(id);

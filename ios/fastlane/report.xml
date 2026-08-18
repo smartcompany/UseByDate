@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="00: app_store_connect_api_key" time="0.002486">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="01: default_platform" time="8.2e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="02: flutter clean" time="6.009831">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="03: flutter pub get" time="4.692002">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="04: cocoapods" time="2.96053">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="05: increment_build_number" time="0.2543">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="06: get_provisioning_profile" time="3.886539">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="07: update_code_signing_settings" time="0.038049">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="08: clean_build_artifacts" time="0.000171">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="09: build_app" time="78.253274">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="10: update_code_signing_settings" time="0.01254">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="11: bash -c \!\ unzip\ -l\ /Users/smart/Projects/UseByDate/client/ios/Runner.ipa\ \|\ grep\ -q\ objective_c.framework" time="0.011968">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="12: upload_to_app_store" time="58.247034">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>

@@ -21,6 +21,15 @@ flutter run --dart-define=PHOTO_API_BASE_URL=http://127.0.0.1:3000
 
 Package ID: `com.smartcompany.useByDate`.
 
+## Release
+
+Store metadata and release builds live in `deployment-kit/`:
+
+```bash
+./deployment-kit/scripts/release_ios_all.sh
+./deployment-kit/scripts/release_android_all.sh
+```
+
 ## Features (MVP)
 
 - Camera / album pick (share_lib album grid), up to 3 photos
