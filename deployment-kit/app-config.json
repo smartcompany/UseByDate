@@ -1,6 +1,7 @@
 {
   "appName": "AI Expiry Reminder",
   "bundleId": "com.smartcompany.useByDate",
+  "sku": "com.smartcompany.useByDate",
   "packageName": "com.smartcompany.useByDate",
   "serverBaseUrl": "https://use-by-date-server.vercel.app",
   "privacyPath": "/privacy",

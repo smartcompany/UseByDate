@@ -18,7 +18,6 @@ DEFAULT_KEY_ID="7FN57R567Z"
 DEFAULT_BUNDLE_ID="com.smartcompany.useByDate"
 DEFAULT_APP_NAME="AI Expiry Reminder"
 DEFAULT_PRIMARY_LANGUAGE="en-US"
-DEFAULT_SKU="comsmartcompanyuseByDate"
 DEFAULT_SUPPORT_URL="https://smartcompany.github.io"
 DEFAULT_MARKETING_URL="https://smartcompany.github.io"
 DEFAULT_COPYRIGHT="2026 Yong Geon Kim. All rights reserved."
@@ -50,7 +49,7 @@ export ASC_KEY_ID="${ASC_KEY_ID:-$DEFAULT_KEY_ID}"
 export ASC_PRIVATE_KEY_PATH="${ASC_PRIVATE_KEY_PATH:-$DEFAULT_KEY}"
 export ASC_BUNDLE_ID="${PRESET_ASC_BUNDLE_ID:-$DEFAULT_BUNDLE_ID}"
 export ASC_APP_ID="${PRESET_ASC_APP_ID:-}"
-export ASC_SKU="${PRESET_ASC_SKU:-$DEFAULT_SKU}"
+export ASC_SKU="${PRESET_ASC_SKU:-$ASC_BUNDLE_ID}"
 export ASC_APP_NAME="${PRESET_ASC_APP_NAME:-$DEFAULT_APP_NAME}"
 export PRODUCE_USERNAME="${PRESET_PRODUCE_USERNAME:-$DEFAULT_PRODUCE_USERNAME}"
 export ASC_SUPPORT_URL="${ASC_SUPPORT_URL:-$DEFAULT_SUPPORT_URL}"
@@ -58,6 +57,7 @@ export ASC_MARKETING_URL="${ASC_MARKETING_URL:-$DEFAULT_MARKETING_URL}"
 export ASC_COPYRIGHT="${ASC_COPYRIGHT:-$DEFAULT_COPYRIGHT}"
 
 pass_args=()
+SKU_EXPLICIT=false
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --bundle-id)
@@ -70,6 +70,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --sku)
       export ASC_SKU="$2"
+      SKU_EXPLICIT=true
       shift 2
       ;;
     --app-name)
@@ -85,6 +86,10 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+if [[ "$SKU_EXPLICIT" != true && -z "${PRESET_ASC_SKU}" ]]; then
+  export ASC_SKU="$ASC_BUNDLE_ID"
+fi
 
 if [[ -z "${ASC_ISSUER_ID:-}" ]]; then
   echo "ASC_ISSUER_ID is required."

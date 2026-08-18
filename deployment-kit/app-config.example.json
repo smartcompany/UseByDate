@@ -1,6 +1,7 @@
 {
   "appName": "Your App Name",
   "bundleId": "com.example.yourapp",
+  "sku": "com.example.yourapp",
   "packageName": "com.example.yourapp",
   "serverBaseUrl": "https://your-app-server.vercel.app",
   "privacyPath": "/privacy",
