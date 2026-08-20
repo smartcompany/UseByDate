@@ -43,83 +43,6 @@ class _AddItemsScreenState extends ConsumerState<AddItemsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _runAi());
   }
 
-  bool get _canAddMore => _imagePaths.length < PhotoPickService.maxPhotos;
-
-  Future<void> _addFromAlbum() async {
-    if (!_canAddMore) {
-      _showMaxPhotosReached();
-      return;
-    }
-    final allowed = await PhotoAddAdGate.confirmBeforePick(context);
-    if (!allowed || !mounted) return;
-
-    final remaining = PhotoPickService.maxPhotos - _imagePaths.length;
-    final paths = await PhotoPickService.pickFromAlbum(
-      context,
-      maxCount: remaining,
-    );
-    if (paths.isEmpty) return;
-    setState(() {
-      _imagePaths.addAll(paths.take(remaining));
-      _items.clear();
-      _statusKind = null;
-      _statusError = null;
-      _foundCount = null;
-    });
-    await _runAi();
-  }
-
-  Future<void> _addFromCamera() async {
-    if (!_canAddMore) {
-      _showMaxPhotosReached();
-      return;
-    }
-    final allowed = await PhotoAddAdGate.confirmBeforePick(context);
-    if (!allowed || !mounted) return;
-
-    final path = await PhotoPickService.captureFromCamera(context);
-    if (path == null) return;
-    setState(() {
-      _imagePaths.add(path);
-      _items.clear();
-      _statusKind = null;
-      _statusError = null;
-      _foundCount = null;
-    });
-    await _runAi();
-  }
-
-  Future<void> _scanAgain() async {
-    final allowed = await PhotoAddAdGate.confirmBeforePick(
-      context,
-      purpose: PhotoAddAdPurpose.scanAgain,
-    );
-    if (!allowed || !mounted) return;
-    await _runAi();
-  }
-
-  void _removeImageAt(int index) {
-    if (_imagePaths.length <= 1) return;
-    setState(() {
-      _imagePaths.removeAt(index);
-      _items.clear();
-      _statusKind = null;
-      _statusError = null;
-      _foundCount = null;
-    });
-    _runAi();
-  }
-
-  void _showMaxPhotosReached() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          context.l10n.maxPhotosReached(PhotoPickService.maxPhotos),
-        ),
-      ),
-    );
-  }
-
   Future<void> _runAi() async {
     if (_imagePaths.isEmpty) return;
     setState(() {
@@ -136,16 +59,28 @@ class _AddItemsScreenState extends ConsumerState<AddItemsScreen> {
             capturedAt: todayIsoDate(),
           );
       if (!mounted) return;
+      final pathByImageId = <String, String>{
+        for (var i = 0; i < _imagePaths.length; i++)
+          'photo-${i + 1}': _imagePaths[i],
+      };
       setState(() {
         _items
           ..clear()
-          ..addAll(items.map(DraftProduct.fromAnalyzed));
+          ..addAll(
+            items.map(
+              (item) => DraftProduct.fromAnalyzed(
+                item,
+                sourceImagePath:
+                    pathByImageId[item.imageId] ?? _imagePaths.first,
+              ),
+            ),
+          );
         _foundCount = items.length;
         _statusKind =
             items.isEmpty ? _AiStatusKind.empty : _AiStatusKind.found;
         _analyzing = false;
       });
-      unawaited(PhotoAddAdGate.recordSuccessfulAiCall());
+      unawaited(PhotoAddAdGate.recordSuccessfulAiCalls(_imagePaths.length));
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -233,48 +168,12 @@ class _AddItemsScreenState extends ConsumerState<AddItemsScreen> {
             height: 120,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              itemCount: _imagePaths.length + (_canAddMore ? 1 : 0),
+              itemCount: _imagePaths.length,
               separatorBuilder: (_, _) => const SizedBox(width: 10),
               itemBuilder: (context, index) {
-                if (index >= _imagePaths.length) {
-                  return _AddPhotoTile(
-                    enabled: !_analyzing,
-                    label: l10n.addPhoto,
-                    onCamera: _addFromCamera,
-                    onAlbum: _addFromAlbum,
-                  );
-                }
-                return _PhotoThumb(
-                  path: _imagePaths[index],
-                  canRemove: _imagePaths.length > 1 && !_analyzing,
-                  removeLabel: l10n.removePhoto,
-                  onRemove: () => _removeImageAt(index),
-                );
+                return _PhotoThumb(path: _imagePaths[index]);
               },
             ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _PhotoActionIcon(
-                icon: Icons.photo_camera_outlined,
-                tooltip: l10n.camera,
-                onPressed: _analyzing ? null : _addFromCamera,
-              ),
-              const SizedBox(width: 12),
-              _PhotoActionIcon(
-                icon: Icons.photo_library_outlined,
-                tooltip: l10n.gallery,
-                onPressed: _analyzing ? null : _addFromAlbum,
-              ),
-              const SizedBox(width: 12),
-              _PhotoActionIcon(
-                icon: Icons.document_scanner_outlined,
-                tooltip: l10n.scanAgain,
-                onPressed: _analyzing ? null : _scanAgain,
-              ),
-            ],
           ),
           const SizedBox(height: 16),
           if (_analyzing) const LinearProgressIndicator(),
@@ -301,7 +200,13 @@ class _AddItemsScreenState extends ConsumerState<AddItemsScreen> {
           TextButton.icon(
             onPressed: _analyzing
                 ? null
-                : () => setState(() => _items.add(DraftProduct.manual())),
+                : () => setState(
+                      () => _items.add(
+                        DraftProduct.manual(
+                          sourceImagePath: _imagePaths.first,
+                        ),
+                      ),
+                    ),
             icon: const Icon(Icons.add),
             label: Text(l10n.addItemManually),
           ),
@@ -326,170 +231,25 @@ class _AddItemsScreenState extends ConsumerState<AddItemsScreen> {
   }
 }
 
-class _PhotoActionIcon extends StatelessWidget {
-  const _PhotoActionIcon({
-    required this.icon,
-    required this.tooltip,
-    required this.onPressed,
-  });
-
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final enabled = onPressed != null;
-    return Material(
-      color: AppTheme.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: const BorderSide(color: AppTheme.hairline),
-      ),
-      child: IconButton(
-        tooltip: tooltip,
-        onPressed: onPressed,
-        icon: Icon(
-          icon,
-          color: enabled ? AppTheme.coralDeep : AppTheme.muted,
-        ),
-      ),
-    );
-  }
-}
-
 class _PhotoThumb extends StatelessWidget {
-  const _PhotoThumb({
-    required this.path,
-    required this.canRemove,
-    required this.removeLabel,
-    required this.onRemove,
-  });
+  const _PhotoThumb({required this.path});
 
   final String path;
-  final bool canRemove;
-  final String removeLabel;
-  final VoidCallback onRemove;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(14),
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: Image.file(
-              File(path),
-              fit: BoxFit.cover,
-              width: 120,
-              height: 120,
-              errorBuilder: (_, _, _) => const ColoredBox(
-                color: AppTheme.hairline,
-                child: Icon(Icons.broken_image_outlined),
-              ),
-            ),
-          ),
-        ),
-        if (canRemove)
-          Positioned(
-            top: 4,
-            right: 4,
-            child: Material(
-              color: Colors.black54,
-              shape: const CircleBorder(),
-              child: IconButton(
-                tooltip: removeLabel,
-                visualDensity: VisualDensity.compact,
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints.tightFor(width: 28, height: 28),
-                iconSize: 16,
-                color: Colors.white,
-                onPressed: onRemove,
-                icon: const Icon(Icons.close),
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _AddPhotoTile extends StatelessWidget {
-  const _AddPhotoTile({
-    required this.enabled,
-    required this.label,
-    required this.onCamera,
-    required this.onAlbum,
-  });
-
-  final bool enabled;
-  final String label;
-  final VoidCallback onCamera;
-  final VoidCallback onAlbum;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: AppTheme.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: const BorderSide(color: AppTheme.hairline),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: enabled
-            ? () async {
-                await showModalBottomSheet<void>(
-                  context: context,
-                  builder: (context) {
-                    final l10n = context.l10n;
-                    return SafeArea(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            leading: const Icon(Icons.photo_camera_outlined),
-                            title: Text(l10n.camera),
-                            onTap: () {
-                              Navigator.pop(context);
-                              onCamera();
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.photo_library_outlined),
-                            title: Text(l10n.gallery),
-                            onTap: () {
-                              Navigator.pop(context);
-                              onAlbum();
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              }
-            : null,
-        child: SizedBox(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Image.file(
+          File(path),
+          fit: BoxFit.cover,
           width: 120,
           height: 120,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.add_photo_alternate_outlined,
-                color: enabled ? AppTheme.olive : AppTheme.muted,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: enabled ? AppTheme.ink : AppTheme.muted,
-                    ),
-              ),
-            ],
+          errorBuilder: (_, _, _) => const ColoredBox(
+            color: AppTheme.hairline,
+            child: Icon(Icons.broken_image_outlined),
           ),
         ),
       ),
@@ -557,7 +317,28 @@ class _DraftItemCardState extends State<_DraftItemCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (widget.item.sourceImagePath != null) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.file(
+                      File(widget.item.sourceImagePath!),
+                      width: 48,
+                      height: 48,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => const SizedBox(
+                        width: 48,
+                        height: 48,
+                        child: ColoredBox(
+                          color: AppTheme.hairline,
+                          child: Icon(Icons.broken_image_outlined, size: 18),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
                 Expanded(
                   child: TextField(
                     controller: _nameController,

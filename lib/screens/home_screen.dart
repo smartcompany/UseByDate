@@ -29,6 +29,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   String? _openSwipeItemKey;
   bool _pickFlowActive = false;
   String? _pickFlowMessage;
+  bool _selectionMode = false;
+  final Set<int> _selectedIds = {};
 
   static const _bottomBarHeight = 80.0;
 
@@ -150,6 +152,91 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.invalidate(productsProvider);
   }
 
+  void _enterSelectionMode({int? initialId}) {
+    setState(() {
+      _selectionMode = true;
+      _openSwipeItemKey = null;
+      _selectedIds.clear();
+      if (initialId != null) {
+        _selectedIds.add(initialId);
+      }
+    });
+  }
+
+  void _exitSelectionMode() {
+    setState(() {
+      _selectionMode = false;
+      _selectedIds.clear();
+    });
+  }
+
+  void _toggleSelection(int id) {
+    setState(() {
+      if (_selectedIds.contains(id)) {
+        _selectedIds.remove(id);
+      } else {
+        _selectedIds.add(id);
+      }
+    });
+  }
+
+  void _selectAll(List<ProductWithPhoto> products) {
+    setState(() {
+      _selectedIds
+        ..clear()
+        ..addAll(products.map((item) => item.product.id));
+    });
+  }
+
+  Future<void> _confirmAndDeleteSelected() async {
+    if (_selectedIds.isEmpty) return;
+    final l10n = context.l10n;
+    final count = _selectedIds.length;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.deleteSelectedTitle),
+        content: Text(l10n.deleteSelectedMessage(count)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.delete),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    final ids = _selectedIds.toList(growable: false);
+    await ref.read(productRepositoryProvider).deleteProducts(ids);
+    ref.invalidate(productsProvider);
+    if (!mounted) return;
+    _exitSelectionMode();
+  }
+
+  void _handleItemTap(ProductWithPhoto item) {
+    if (_selectionMode) {
+      _toggleSelection(item.product.id);
+      return;
+    }
+    if (_openSwipeItemKey != null) {
+      setState(() => _openSwipeItemKey = null);
+      return;
+    }
+    _openDetail(item);
+  }
+
+  void _handleItemLongPress(ProductWithPhoto item) {
+    if (_selectionMode) {
+      _toggleSelection(item.product.id);
+      return;
+    }
+    _enterSelectionMode(initialId: item.product.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -162,33 +249,70 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final bottomInset = MediaQuery.paddingOf(context).bottom;
     final bottomPad = _bottomBarHeight + bottomInset + 20;
 
-    return Scaffold(
+    return PopScope(
+      canPop: !_selectionMode,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _selectionMode) _exitSelectionMode();
+      },
+      child: Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         titleSpacing: 20,
         toolbarHeight: 72,
         title: BrandTitle(title: l10n.appTitle),
         actions: [
-          IconButton(
-            tooltip: layout == HomeLayoutMode.grid
-                ? l10n.layoutListTooltip
-                : l10n.layoutGridTooltip,
-            onPressed: () => ref.read(homeLayoutProvider.notifier).toggle(),
-            icon: Icon(
-              layout == HomeLayoutMode.grid
-                  ? Icons.view_agenda_outlined
-                  : Icons.grid_view_rounded,
+          if (_selectionMode) ...[
+            TextButton(
+              onPressed: productsAsync.value?.isEmpty ?? true
+                  ? null
+                  : () {
+                      final products = productsAsync.value!;
+                      if (_selectedIds.length == products.length) {
+                        setState(() => _selectedIds.clear());
+                      } else {
+                        _selectAll(products);
+                      }
+                    },
+              child: Text(
+                (productsAsync.value != null &&
+                        _selectedIds.length == productsAsync.value!.length)
+                    ? l10n.deselectAll
+                    : l10n.selectAll,
+              ),
             ),
-          ),
-          IconButton(
-            tooltip: l10n.settingsTooltip,
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SettingsScreen()),
-              );
-            },
-            icon: const Icon(Icons.settings_outlined),
-          ),
+            IconButton(
+              tooltip: l10n.cancel,
+              onPressed: _exitSelectionMode,
+              icon: const Icon(Icons.close_rounded),
+            ),
+          ] else ...[
+            if (productsAsync.value?.isNotEmpty ?? false)
+              IconButton(
+                tooltip: l10n.selectItemsTooltip,
+                onPressed: () => _enterSelectionMode(),
+                icon: const Icon(Icons.checklist_rounded),
+              ),
+            IconButton(
+              tooltip: layout == HomeLayoutMode.grid
+                  ? l10n.layoutListTooltip
+                  : l10n.layoutGridTooltip,
+              onPressed: () => ref.read(homeLayoutProvider.notifier).toggle(),
+              icon: Icon(
+                layout == HomeLayoutMode.grid
+                    ? Icons.view_agenda_outlined
+                    : Icons.grid_view_rounded,
+              ),
+            ),
+            IconButton(
+              tooltip: l10n.settingsTooltip,
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                );
+              },
+              icon: const Icon(Icons.settings_outlined),
+            ),
+          ],
           const SizedBox(width: 4),
         ],
       ),
@@ -223,10 +347,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     itemCount: products.length,
                     itemBuilder: (context, index) {
                       final item = products[index];
+                      final id = item.product.id;
                       return ProductGridTile(
                         item: item,
                         notifyDaysBefore: notifyDays,
-                        onTap: () => _openDetail(item),
+                        selecting: _selectionMode,
+                        selected: _selectedIds.contains(id),
+                        onTap: () => _handleItemTap(item),
+                        onLongPress: () => _handleItemLongPress(item),
                       );
                     },
                   );
@@ -251,6 +379,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     }
                     final item = (entry as _SectionItem).item;
                     final itemKey = item.product.id.toString();
+                    final id = item.product.id;
+                    final tile = ProductListTile(
+                      item: item,
+                      notifyDaysBefore: notifyDays,
+                      selecting: _selectionMode,
+                      selected: _selectedIds.contains(id),
+                      onTap: () => _handleItemTap(item),
+                      onLongPress: () => _handleItemLongPress(item),
+                    );
+                    if (_selectionMode) {
+                      return ColoredBox(
+                        color: AppTheme.background,
+                        child: tile,
+                      );
+                    }
                     return SwipeRevealDelete(
                       itemKey: itemKey,
                       openItemKey: _openSwipeItemKey,
@@ -260,17 +403,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       onDelete: () => _confirmAndDelete(item),
                       child: ColoredBox(
                         color: AppTheme.background,
-                        child: ProductListTile(
-                          item: item,
-                          notifyDaysBefore: notifyDays,
-                          onTap: () {
-                            if (_openSwipeItemKey != null) {
-                              setState(() => _openSwipeItemKey = null);
-                              return;
-                            }
-                            _openDetail(item);
-                          },
-                        ),
+                        child: tile,
                       ),
                     );
                   },
@@ -281,12 +414,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: EdgeInsets.only(bottom: bottomInset + 12),
-                child: _PhotosStyleBottomBar(
-                  onCamera: _openAddFromCamera,
-                  onAlbum: _openAddFromAlbum,
-                  cameraTooltip: l10n.camera,
-                  albumTooltip: l10n.album,
-                ),
+                child: _selectionMode
+                    ? _SelectionBottomBar(
+                        selectedCount: _selectedIds.length,
+                        deleteLabel: l10n.deleteSelected,
+                        onDelete: _selectedIds.isEmpty
+                            ? null
+                            : _confirmAndDeleteSelected,
+                      )
+                    : _PhotosStyleBottomBar(
+                        onCamera: _openAddFromCamera,
+                        onAlbum: _openAddFromAlbum,
+                        cameraTooltip: l10n.camera,
+                        albumTooltip: l10n.album,
+                      ),
               ),
             ),
             if (_pickFlowActive)
@@ -323,6 +464,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ],
         ),
         ),
+      ),
       ),
     );
   }
@@ -375,6 +517,57 @@ class _SectionHeader extends _ListEntry {
 class _SectionItem extends _ListEntry {
   _SectionItem(this.item);
   final ProductWithPhoto item;
+}
+
+class _SelectionBottomBar extends StatelessWidget {
+  const _SelectionBottomBar({
+    required this.selectedCount,
+    required this.deleteLabel,
+    required this.onDelete,
+  });
+
+  final int selectedCount;
+  final String deleteLabel;
+  final VoidCallback? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final enabled = onDelete != null;
+
+    return Material(
+      elevation: 8,
+      shadowColor: Colors.black.withValues(alpha: 0.18),
+      borderRadius: BorderRadius.circular(16),
+      color: AppTheme.surface,
+      child: SizedBox(
+        width: 280,
+        height: 52,
+        child: TextButton.icon(
+          onPressed: onDelete,
+          style: TextButton.styleFrom(
+            foregroundColor: enabled ? colorScheme.error : AppTheme.muted,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+          icon: Icon(
+            Icons.delete_outline,
+            color: enabled ? colorScheme.error : AppTheme.muted,
+          ),
+          label: Text(
+            selectedCount > 0
+                ? '$deleteLabel ($selectedCount)'
+                : deleteLabel,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: enabled ? colorScheme.error : AppTheme.muted,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _PhotosStyleBottomBar extends StatelessWidget {
@@ -532,19 +725,19 @@ class _EmptyState extends StatelessWidget {
             _EmptyHomeStep(
               number: '1',
               label: l10n.emptyHomeStep1,
-              icon: Icons.photo_camera_outlined,
+              icon: Icons.receipt_long_outlined,
             ),
             const SizedBox(height: 14),
             _EmptyHomeStep(
               number: '2',
               label: l10n.emptyHomeStep2,
-              icon: Icons.event_available_outlined,
+              icon: Icons.photo_library_outlined,
             ),
             const SizedBox(height: 14),
             _EmptyHomeStep(
               number: '3',
               label: l10n.emptyHomeStep3,
-              icon: Icons.notifications_outlined,
+              icon: Icons.sell_outlined,
             ),
             const SizedBox(height: 28),
             Text(

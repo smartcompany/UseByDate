@@ -20,19 +20,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get emptyHomeTitle => '这个什么时候过期？';
 
   @override
-  String get emptyHomeBody => '拍下包装，我们会读取或估算日期，并在到期时提醒你。';
+  String get emptyHomeBody => '上传照片后，AI 会读取或估算商品名称和保质期，并在临近时提醒你。可以这样拍：';
 
   @override
-  String get emptyHomeStep1 => '拍一件或一次拍多件';
+  String get emptyHomeStep1 => '截取购物或外卖订单列表再上传';
 
   @override
-  String get emptyHomeStep2 => '核对名称和保质期';
+  String get emptyHomeStep2 => '一次拍下多件商品';
 
   @override
-  String get emptyHomeStep3 => '当天或提前几天收到提醒';
+  String get emptyHomeStep3 => '拍包装上印有保质期的部分';
 
   @override
-  String get emptyHomeCtaHint => '从下方相机或相册开始';
+  String get emptyHomeCtaHint => '核对并保存后，会在当天或提前几天提醒。从下方相机或相册开始';
 
   @override
   String get camera => '相机';
@@ -282,4 +282,43 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get photoAddAdLoading => '正在加载广告…';
+
+  @override
+  String get selectItemsTooltip => '选择项目';
+
+  @override
+  String selectedCount(int count) {
+    return '已选 $count 项';
+  }
+
+  @override
+  String get selectAll => '全选';
+
+  @override
+  String get deselectAll => '取消全选';
+
+  @override
+  String get deleteSelectedTitle => '删除所选项目';
+
+  @override
+  String deleteSelectedMessage(int count) {
+    return '删除所选的 $count 个项目及其提醒？';
+  }
+
+  @override
+  String get deleteSelected => '删除所选';
+
+  @override
+  String get shareAppTitle => '分享应用';
+
+  @override
+  String get shareAppSubtitle => '向朋友发送下载链接';
+
+  @override
+  String get shareAppMessage => 'AI保质期提醒 — 用照片管理食品保质期';
+
+  @override
+  String shareAppFailed(String error) {
+    return '分享失败：$error';
+  }
 }

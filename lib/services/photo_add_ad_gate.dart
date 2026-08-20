@@ -16,8 +16,8 @@ import 'package:use_by_date/services/photo_pick_flow_overlay.dart';
 /// Interval `photo_add_ad_every` comes from `GET /api/settings` (server-editable).
 /// Ad unit IDs are loaded via [AdService] from the same settings JSON.
 ///
-/// The counter advances only in [recordSuccessfulAiCall] after a successful
-/// analyze API response — not when opening the camera or album.
+/// The counter advances in [recordSuccessfulAiCalls] by the number of photos
+/// analyzed in one successful run — not when opening the camera or album.
 enum PhotoAddAdPurpose {
   /// Open camera or album to add food photos.
   addPhoto,
@@ -79,13 +79,22 @@ abstract final class PhotoAddAdGate {
   }
 
   /// Call after a successful analyze API response (including empty items).
-  static Future<void> recordSuccessfulAiCall() async {
+  ///
+  /// [photoCount] is the number of photos analyzed in that run. If the total
+  /// would exceed [every], the counter is clamped to [every] (0 free uses left)
+  /// so the next pick shows the ad dialog — no retroactive partial credit.
+  static Future<void> recordSuccessfulAiCalls(int photoCount) async {
+    if (photoCount <= 0) return;
     await ensureSettingsLoaded();
     final prefs = await SharedPreferences.getInstance();
     final count = prefs.getInt(_countKey) ?? 0;
-    final next = count + 1;
-    await prefs.setInt(_countKey, next);
-    debugPrint('[PhotoAddAdGate] AI success count $next/$every');
+    final threshold = every;
+    final next = count + photoCount;
+    final stored = next >= threshold ? threshold : next;
+    await prefs.setInt(_countKey, stored);
+    debugPrint(
+      '[PhotoAddAdGate] AI success +$photoCount => $stored/$threshold',
+    );
   }
 
   /// Returns `true` if the user may proceed to pick a photo / scan again.

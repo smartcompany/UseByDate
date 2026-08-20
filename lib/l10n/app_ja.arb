@@ -3,11 +3,11 @@
   "appTitle": "AI賞味期限リマインダー",
   "errorWithMessage": "エラー: {message}",
   "emptyHomeTitle": "いつまで使える？",
-  "emptyHomeBody": "パッケージを撮ると日付を読むか推定し、その日にお知らせします。",
-  "emptyHomeStep1": "1つずつ、またはまとめて撮影",
-  "emptyHomeStep2": "名前と期限を確認",
-  "emptyHomeStep3": "当日または数日前に通知",
-  "emptyHomeCtaHint": "下のカメラまたはアルバムから始めましょう",
+  "emptyHomeBody": "写真を上げると、AIが商品名と期限を読むか推定し、近くなったらお知らせします。こう撮ってください。",
+  "emptyHomeStep1": "買い物アプリの注文一覧をキャプチャして上げる",
+  "emptyHomeStep2": "複数の商品をまとめて撮影する",
+  "emptyHomeStep3": "パッケージの期限が書いてある部分を撮る",
+  "emptyHomeCtaHint": "結果を確認して保存すると、当日または数日前にお知らせします。下のカメラまたはアルバムから始めましょう",
   "camera": "カメラ",
   "album": "アルバム",
   "settingsTooltip": "設定",
@@ -92,5 +92,31 @@
   },
   "photoAddAdContinueScan": "広告を見て再スキャン",
   "photoAddAdCancel": "キャンセル",
-  "photoAddAdLoading": "広告を読み込み中…"
+  "photoAddAdLoading": "広告を読み込み中…",
+  "selectItemsTooltip": "項目を選択",
+  "selectedCount": "{count}件選択",
+  "@selectedCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "selectAll": "すべて選択",
+  "deselectAll": "選択解除",
+  "deleteSelectedTitle": "選択した項目を削除",
+  "deleteSelectedMessage": "選択した{count}件の項目と通知を削除しますか？",
+  "@deleteSelectedMessage": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "deleteSelected": "選択を削除",
+  "shareAppTitle": "アプリを共有",
+  "shareAppSubtitle": "友だちへダウンロードリンクを送る",
+  "shareAppMessage": "AI賞味期限リマインダー — 写真で食品の賞味期限を管理",
+  "shareAppFailed": "共有に失敗しました: {error}",
+  "@shareAppFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  }
 }

@@ -58,12 +58,18 @@ class ProductRepository {
       throw StateError('At least one image is required');
     }
 
-    // Display thumbnail uses the first photo; AI may have used up to 3.
-    final storedPath = await imageStore.persistImage(sourceImagePaths.first);
-    final photoId = await db.insertPhoto(imagePath: storedPath);
     final settings = await reminderSettings.load();
+    final photoIdByPath = <String, int>{};
 
     for (final draft in named) {
+      final sourcePath = draft.sourceImagePath ?? sourceImagePaths.first;
+      var photoId = photoIdByPath[sourcePath];
+      if (photoId == null) {
+        final storedPath = await imageStore.persistImage(sourcePath);
+        photoId = await db.insertPhoto(imagePath: storedPath);
+        photoIdByPath[sourcePath] = photoId;
+      }
+
       final name = draft.name.trim();
       final id = await db.insertProduct(
         ProductsCompanion.insert(
@@ -122,6 +128,12 @@ class ProductRepository {
     if (photo != null) {
       await imageStore.deleteImage(photo.imagePath);
       await db.deletePhotoRow(photoId);
+    }
+  }
+
+  Future<void> deleteProducts(Iterable<int> ids) async {
+    for (final id in ids) {
+      await deleteProduct(id);
     }
   }
 

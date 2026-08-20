@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
+import 'package:use_by_date/config/store_links.dart';
 import 'package:use_by_date/l10n/l10n_extensions.dart';
 import 'package:use_by_date/providers/providers.dart';
 import 'package:use_by_date/services/camera_album_settings.dart';
@@ -45,6 +47,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  Future<void> _shareApp(BuildContext context) async {
+    final l10n = context.l10n;
+    final box = context.findRenderObject() as RenderBox?;
+    final origin =
+        box == null ? null : box.localToGlobal(Offset.zero) & box.size;
+    try {
+      await Share.share(
+        '${l10n.shareAppMessage}\n${StoreLinks.shareUrls()}',
+        subject: l10n.appTitle,
+        sharePositionOrigin: origin,
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.shareAppFailed(e.toString()))),
+      );
+    }
+  }
+
   Future<void> _pickTime(ReminderSettings settings) async {
     final picked = await showTimePicker(
       context: context,
@@ -84,6 +105,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.settingsNotificationsTitle),
             subtitle: Text(l10n.settingsNotificationsSubtitle, style: mutedStyle),
             onTap: _requestNotifications,
+          ),
+          ListTile(
+            leading: const Icon(Icons.ios_share_outlined),
+            title: Text(l10n.shareAppTitle),
+            subtitle: Text(l10n.shareAppSubtitle, style: mutedStyle),
+            onTap: () => _shareApp(context),
           ),
           settingsAsync.when(
             loading: () => const ListTile(

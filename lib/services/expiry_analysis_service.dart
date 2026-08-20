@@ -44,6 +44,7 @@ class ExpiryAnalysisService {
       }
 
       images.add({
+        'imageId': 'photo-${images.length + 1}',
         'imageBase64': base64Encode(bytes),
         'mimeType': _mimeTypeForPath(imagePath),
       });
@@ -93,6 +94,9 @@ class ExpiryAnalysisService {
       items.add(
         AnalyzedExpiryItem(
           name: name.trim(),
+          imageId: entry['imageId'] is String
+              ? (entry['imageId'] as String).trim()
+              : null,
           expiryDate: parseIsoDate(entry['expiryDate'] as String?),
           expirySource: source is String ? source : null,
           confidence: confidence is num ? confidence.toDouble() : null,

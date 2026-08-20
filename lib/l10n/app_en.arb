@@ -8,11 +8,11 @@
     }
   },
   "emptyHomeTitle": "When does this expire?",
-  "emptyHomeBody": "Photo the package. We'll read the date or estimate it, then remind you.",
-  "emptyHomeStep1": "Photo one item or several together",
-  "emptyHomeStep2": "Check the name and expiry date",
-  "emptyHomeStep3": "Get a reminder on or before that day",
-  "emptyHomeCtaHint": "Start with the camera or album below",
+  "emptyHomeBody": "Upload a photo and we'll read or estimate product names and expiry dates, then remind you in time. Here's how to shoot it.",
+  "emptyHomeStep1": "Screenshot an order list from a grocery or shopping app",
+  "emptyHomeStep2": "Photo several items together as a group",
+  "emptyHomeStep3": "Photo the expiry date printed on the package",
+  "emptyHomeCtaHint": "Review and save the results. Start with the camera or album below",
   "camera": "Camera",
   "album": "Album",
   "settingsTooltip": "Settings",
@@ -149,5 +149,31 @@
   },
   "photoAddAdContinueScan": "Watch ad & scan again",
   "photoAddAdCancel": "Cancel",
-  "photoAddAdLoading": "Loading ad…"
+  "photoAddAdLoading": "Loading ad…",
+  "selectItemsTooltip": "Select items",
+  "selectedCount": "{count} selected",
+  "@selectedCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "selectAll": "Select all",
+  "deselectAll": "Deselect all",
+  "deleteSelectedTitle": "Delete selected items",
+  "deleteSelectedMessage": "Delete {count} selected items and their reminders?",
+  "@deleteSelectedMessage": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "deleteSelected": "Delete selected",
+  "shareAppTitle": "Share app",
+  "shareAppSubtitle": "Send a download link to friends",
+  "shareAppMessage": "AI Expiry Reminder — track food expiry from photos",
+  "shareAppFailed": "Couldn't share: {error}",
+  "@shareAppFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  }
 }

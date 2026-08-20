@@ -20,19 +20,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get emptyHomeTitle => '이거 언제까지예요?';
 
   @override
-  String get emptyHomeBody => '포장을 찍으면 날짜를 읽거나 추정한 뒤, 그때 알려드려요.';
+  String get emptyHomeBody =>
+      '사진을 올리면 AI가 상품명과 유통기한을 읽거나 추정하고, 임박하면 알려드려요. 이렇게 찍으면 돼요.';
 
   @override
-  String get emptyHomeStep1 => '식품을 하나씩, 또는 여러 개를 한 번에 촬영';
+  String get emptyHomeStep1 => '쿠팡 등 구매 목록 화면을 캡처해서 올리기';
 
   @override
-  String get emptyHomeStep2 => '이름과 유통기한을 확인';
+  String get emptyHomeStep2 => '여러 상품을 한 번에 그룹으로 찍기';
 
   @override
-  String get emptyHomeStep3 => '당일 또는 며칠 전에 알림';
+  String get emptyHomeStep3 => '포장에서 유통기한이 적힌 부분을 찍기';
 
   @override
-  String get emptyHomeCtaHint => '아래 카메라나 앨범으로 시작하세요';
+  String get emptyHomeCtaHint =>
+      '결과를 확인·저장하면 당일 또는 며칠 전에 알려드려요. 아래 카메라나 앨범으로 시작하세요';
 
   @override
   String get camera => '카메라';
@@ -282,4 +284,43 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get photoAddAdLoading => '광고를 불러오는 중…';
+
+  @override
+  String get selectItemsTooltip => '항목 선택';
+
+  @override
+  String selectedCount(int count) {
+    return '$count개 선택';
+  }
+
+  @override
+  String get selectAll => '전체 선택';
+
+  @override
+  String get deselectAll => '선택 해제';
+
+  @override
+  String get deleteSelectedTitle => '선택 항목 삭제';
+
+  @override
+  String deleteSelectedMessage(int count) {
+    return '선택한 $count개 항목과 알림을 삭제할까요?';
+  }
+
+  @override
+  String get deleteSelected => '선택 삭제';
+
+  @override
+  String get shareAppTitle => '앱 공유';
+
+  @override
+  String get shareAppSubtitle => '친구에게 다운로드 링크 보내기';
+
+  @override
+  String get shareAppMessage => 'AI 유통기한 알리미 — 사진으로 식품 유통기한을 관리해요';
+
+  @override
+  String shareAppFailed(String error) {
+    return '공유 실패: $error';
+  }
 }

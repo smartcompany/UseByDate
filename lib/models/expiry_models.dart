@@ -1,6 +1,7 @@
 class AnalyzedExpiryItem {
   const AnalyzedExpiryItem({
     required this.name,
+    this.imageId,
     this.expiryDate,
     this.expirySource,
     this.confidence,
@@ -8,6 +9,7 @@ class AnalyzedExpiryItem {
   });
 
   final String name;
+  final String? imageId;
   final DateTime? expiryDate;
   final String? expirySource;
   final double? confidence;
@@ -17,6 +19,7 @@ class AnalyzedExpiryItem {
 class DraftProduct {
   DraftProduct({
     required this.name,
+    this.sourceImagePath,
     this.expiryDate,
     this.expirySource,
     this.confidence,
@@ -25,15 +28,20 @@ class DraftProduct {
   });
 
   String name;
+  String? sourceImagePath;
   DateTime? expiryDate;
   String? expirySource;
   double? confidence;
   String? reason;
   bool notifyEnabled;
 
-  factory DraftProduct.fromAnalyzed(AnalyzedExpiryItem item) {
+  factory DraftProduct.fromAnalyzed(
+    AnalyzedExpiryItem item, {
+    String? sourceImagePath,
+  }) {
     return DraftProduct(
       name: item.name,
+      sourceImagePath: sourceImagePath,
       expiryDate: item.expiryDate,
       expirySource: item.expirySource,
       confidence: item.confidence,
@@ -41,8 +49,12 @@ class DraftProduct {
     );
   }
 
-  factory DraftProduct.manual() {
-    return DraftProduct(name: '', expirySource: 'user');
+  factory DraftProduct.manual({String? sourceImagePath}) {
+    return DraftProduct(
+      name: '',
+      sourceImagePath: sourceImagePath,
+      expirySource: 'user',
+    );
   }
 }
 

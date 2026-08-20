@@ -123,31 +123,31 @@ abstract class AppLocalizations {
   /// No description provided for @emptyHomeBody.
   ///
   /// In en, this message translates to:
-  /// **'Photo the package. We\'ll read the date or estimate it, then remind you.'**
+  /// **'Upload a photo and we\'ll read or estimate product names and expiry dates, then remind you in time. Here\'s how to shoot it.'**
   String get emptyHomeBody;
 
   /// No description provided for @emptyHomeStep1.
   ///
   /// In en, this message translates to:
-  /// **'Photo one item or several together'**
+  /// **'Screenshot an order list from a grocery or shopping app'**
   String get emptyHomeStep1;
 
   /// No description provided for @emptyHomeStep2.
   ///
   /// In en, this message translates to:
-  /// **'Check the name and expiry date'**
+  /// **'Photo several items together as a group'**
   String get emptyHomeStep2;
 
   /// No description provided for @emptyHomeStep3.
   ///
   /// In en, this message translates to:
-  /// **'Get a reminder on or before that day'**
+  /// **'Photo the expiry date printed on the package'**
   String get emptyHomeStep3;
 
   /// No description provided for @emptyHomeCtaHint.
   ///
   /// In en, this message translates to:
-  /// **'Start with the camera or album below'**
+  /// **'Review and save the results. Start with the camera or album below'**
   String get emptyHomeCtaHint;
 
   /// No description provided for @camera.
@@ -599,6 +599,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading ad…'**
   String get photoAddAdLoading;
+
+  /// No description provided for @selectItemsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Select items'**
+  String get selectItemsTooltip;
+
+  /// No description provided for @selectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String selectedCount(int count);
+
+  /// No description provided for @selectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get selectAll;
+
+  /// No description provided for @deselectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Deselect all'**
+  String get deselectAll;
+
+  /// No description provided for @deleteSelectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete selected items'**
+  String get deleteSelectedTitle;
+
+  /// No description provided for @deleteSelectedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {count} selected items and their reminders?'**
+  String deleteSelectedMessage(int count);
+
+  /// No description provided for @deleteSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete selected'**
+  String get deleteSelected;
+
+  /// No description provided for @shareAppTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share app'**
+  String get shareAppTitle;
+
+  /// No description provided for @shareAppSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a download link to friends'**
+  String get shareAppSubtitle;
+
+  /// No description provided for @shareAppMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Expiry Reminder — track food expiry from photos'**
+  String get shareAppMessage;
+
+  /// No description provided for @shareAppFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t share: {error}'**
+  String shareAppFailed(String error);
 }
 
 class _AppLocalizationsDelegate

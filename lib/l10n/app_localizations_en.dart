@@ -21,19 +21,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emptyHomeBody =>
-      'Photo the package. We\'ll read the date or estimate it, then remind you.';
+      'Upload a photo and we\'ll read or estimate product names and expiry dates, then remind you in time. Here\'s how to shoot it.';
 
   @override
-  String get emptyHomeStep1 => 'Photo one item or several together';
+  String get emptyHomeStep1 =>
+      'Screenshot an order list from a grocery or shopping app';
 
   @override
-  String get emptyHomeStep2 => 'Check the name and expiry date';
+  String get emptyHomeStep2 => 'Photo several items together as a group';
 
   @override
-  String get emptyHomeStep3 => 'Get a reminder on or before that day';
+  String get emptyHomeStep3 => 'Photo the expiry date printed on the package';
 
   @override
-  String get emptyHomeCtaHint => 'Start with the camera or album below';
+  String get emptyHomeCtaHint =>
+      'Review and save the results. Start with the camera or album below';
 
   @override
   String get camera => 'Camera';
@@ -289,4 +291,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photoAddAdLoading => 'Loading ad…';
+
+  @override
+  String get selectItemsTooltip => 'Select items';
+
+  @override
+  String selectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get selectAll => 'Select all';
+
+  @override
+  String get deselectAll => 'Deselect all';
+
+  @override
+  String get deleteSelectedTitle => 'Delete selected items';
+
+  @override
+  String deleteSelectedMessage(int count) {
+    return 'Delete $count selected items and their reminders?';
+  }
+
+  @override
+  String get deleteSelected => 'Delete selected';
+
+  @override
+  String get shareAppTitle => 'Share app';
+
+  @override
+  String get shareAppSubtitle => 'Send a download link to friends';
+
+  @override
+  String get shareAppMessage =>
+      'AI Expiry Reminder — track food expiry from photos';
+
+  @override
+  String shareAppFailed(String error) {
+    return 'Couldn\'t share: $error';
+  }
 }

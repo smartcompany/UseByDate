@@ -3,6 +3,7 @@
   "bundleId": "com.smartcompany.useByDate",
   "sku": "com.smartcompany.useByDate",
   "packageName": "com.smartcompany.useByDate",
+  "iosAppStoreId": "6802597559",
   "serverBaseUrl": "https://use-by-date-server.vercel.app",
   "privacyPath": "/privacy",
   "supportUrl": "https://smartcompany.github.io",

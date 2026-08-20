@@ -20,19 +20,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get emptyHomeTitle => 'いつまで使える？';
 
   @override
-  String get emptyHomeBody => 'パッケージを撮ると日付を読むか推定し、その日にお知らせします。';
+  String get emptyHomeBody =>
+      '写真を上げると、AIが商品名と期限を読むか推定し、近くなったらお知らせします。こう撮ってください。';
 
   @override
-  String get emptyHomeStep1 => '1つずつ、またはまとめて撮影';
+  String get emptyHomeStep1 => '買い物アプリの注文一覧をキャプチャして上げる';
 
   @override
-  String get emptyHomeStep2 => '名前と期限を確認';
+  String get emptyHomeStep2 => '複数の商品をまとめて撮影する';
 
   @override
-  String get emptyHomeStep3 => '当日または数日前に通知';
+  String get emptyHomeStep3 => 'パッケージの期限が書いてある部分を撮る';
 
   @override
-  String get emptyHomeCtaHint => '下のカメラまたはアルバムから始めましょう';
+  String get emptyHomeCtaHint =>
+      '結果を確認して保存すると、当日または数日前にお知らせします。下のカメラまたはアルバムから始めましょう';
 
   @override
   String get camera => 'カメラ';
@@ -282,4 +284,43 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get photoAddAdLoading => '広告を読み込み中…';
+
+  @override
+  String get selectItemsTooltip => '項目を選択';
+
+  @override
+  String selectedCount(int count) {
+    return '$count件選択';
+  }
+
+  @override
+  String get selectAll => 'すべて選択';
+
+  @override
+  String get deselectAll => '選択解除';
+
+  @override
+  String get deleteSelectedTitle => '選択した項目を削除';
+
+  @override
+  String deleteSelectedMessage(int count) {
+    return '選択した$count件の項目と通知を削除しますか？';
+  }
+
+  @override
+  String get deleteSelected => '選択を削除';
+
+  @override
+  String get shareAppTitle => 'アプリを共有';
+
+  @override
+  String get shareAppSubtitle => '友だちへダウンロードリンクを送る';
+
+  @override
+  String get shareAppMessage => 'AI賞味期限リマインダー — 写真で食品の賞味期限を管理';
+
+  @override
+  String shareAppFailed(String error) {
+    return '共有に失敗しました: $error';
+  }
 }

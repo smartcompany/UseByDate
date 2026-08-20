@@ -14,11 +14,17 @@ class ProductGridTile extends StatelessWidget {
     required this.item,
     required this.notifyDaysBefore,
     required this.onTap,
+    this.selecting = false,
+    this.selected = false,
+    this.onLongPress,
   });
 
   final ProductWithPhoto item;
   final int notifyDaysBefore;
   final VoidCallback onTap;
+  final bool selecting;
+  final bool selected;
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +41,7 @@ class ProductGridTile extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
+      onLongPress: onLongPress,
       borderRadius: BorderRadius.circular(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -42,17 +49,58 @@ class ProductGridTile extends StatelessWidget {
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(14),
-              child: Image.file(
-                File(item.resolvedImagePath),
-                fit: BoxFit.cover,
-                width: double.infinity,
-                errorBuilder: (_, _, _) => ColoredBox(
-                  color: AppTheme.hairline,
-                  child: Icon(
-                    Icons.broken_image_outlined,
-                    color: AppTheme.muted,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.file(
+                    File(item.resolvedImagePath),
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    errorBuilder: (_, _, _) => ColoredBox(
+                      color: AppTheme.hairline,
+                      child: Icon(
+                        Icons.broken_image_outlined,
+                        color: AppTheme.muted,
+                      ),
+                    ),
                   ),
-                ),
+                  if (selecting)
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: selected
+                            ? AppTheme.coral.withValues(alpha: 0.35)
+                            : Colors.black.withValues(alpha: 0.12),
+                        border: selected
+                            ? Border.all(color: AppTheme.coral, width: 2.5)
+                            : null,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Material(
+                            color: selected
+                                ? AppTheme.coral
+                                : Colors.white.withValues(alpha: 0.92),
+                            shape: const CircleBorder(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: Icon(
+                                selected
+                                    ? Icons.check_rounded
+                                    : Icons.circle_outlined,
+                                size: 20,
+                                color: selected
+                                    ? Colors.white
+                                    : AppTheme.muted.withValues(alpha: 0.6),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),

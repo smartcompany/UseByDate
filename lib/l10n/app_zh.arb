@@ -3,11 +3,11 @@
   "appTitle": "AI保质期提醒",
   "errorWithMessage": "错误：{message}",
   "emptyHomeTitle": "这个什么时候过期？",
-  "emptyHomeBody": "拍下包装，我们会读取或估算日期，并在到期时提醒你。",
-  "emptyHomeStep1": "拍一件或一次拍多件",
-  "emptyHomeStep2": "核对名称和保质期",
-  "emptyHomeStep3": "当天或提前几天收到提醒",
-  "emptyHomeCtaHint": "从下方相机或相册开始",
+  "emptyHomeBody": "上传照片后，AI 会读取或估算商品名称和保质期，并在临近时提醒你。可以这样拍：",
+  "emptyHomeStep1": "截取购物或外卖订单列表再上传",
+  "emptyHomeStep2": "一次拍下多件商品",
+  "emptyHomeStep3": "拍包装上印有保质期的部分",
+  "emptyHomeCtaHint": "核对并保存后，会在当天或提前几天提醒。从下方相机或相册开始",
   "camera": "相机",
   "album": "相册",
   "settingsTooltip": "设置",
@@ -92,5 +92,31 @@
   },
   "photoAddAdContinueScan": "观看广告并重新扫描",
   "photoAddAdCancel": "取消",
-  "photoAddAdLoading": "正在加载广告…"
+  "photoAddAdLoading": "正在加载广告…",
+  "selectItemsTooltip": "选择项目",
+  "selectedCount": "已选 {count} 项",
+  "@selectedCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "selectAll": "全选",
+  "deselectAll": "取消全选",
+  "deleteSelectedTitle": "删除所选项目",
+  "deleteSelectedMessage": "删除所选的 {count} 个项目及其提醒？",
+  "@deleteSelectedMessage": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "deleteSelected": "删除所选",
+  "shareAppTitle": "分享应用",
+  "shareAppSubtitle": "向朋友发送下载链接",
+  "shareAppMessage": "AI保质期提醒 — 用照片管理食品保质期",
+  "shareAppFailed": "分享失败：{error}",
+  "@shareAppFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  }
 }

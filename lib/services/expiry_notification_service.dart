@@ -187,7 +187,7 @@ class ExpiryNotificationService {
             presentSound: true,
           ),
         ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         payload: product.id.toString(),
       );
       debugPrint('[Notify] id=${product.id} zonedSchedule OK at $scheduled');

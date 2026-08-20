@@ -3,11 +3,11 @@
   "appTitle": "AI 유통기한 알리미",
   "errorWithMessage": "오류: {message}",
   "emptyHomeTitle": "이거 언제까지예요?",
-  "emptyHomeBody": "포장을 찍으면 날짜를 읽거나 추정한 뒤, 그때 알려드려요.",
-  "emptyHomeStep1": "식품을 하나씩, 또는 여러 개를 한 번에 촬영",
-  "emptyHomeStep2": "이름과 유통기한을 확인",
-  "emptyHomeStep3": "당일 또는 며칠 전에 알림",
-  "emptyHomeCtaHint": "아래 카메라나 앨범으로 시작하세요",
+  "emptyHomeBody": "사진을 올리면 AI가 상품명과 유통기한을 읽거나 추정하고, 임박하면 알려드려요. 이렇게 찍으면 돼요.",
+  "emptyHomeStep1": "쿠팡 등 구매 목록 화면을 캡처해서 올리기",
+  "emptyHomeStep2": "여러 상품을 한 번에 그룹으로 찍기",
+  "emptyHomeStep3": "포장에서 유통기한이 적힌 부분을 찍기",
+  "emptyHomeCtaHint": "결과를 확인·저장하면 당일 또는 며칠 전에 알려드려요. 아래 카메라나 앨범으로 시작하세요",
   "camera": "카메라",
   "album": "앨범",
   "settingsTooltip": "설정",
@@ -92,5 +92,31 @@
   },
   "photoAddAdContinueScan": "광고 보고 다시 스캔",
   "photoAddAdCancel": "취소",
-  "photoAddAdLoading": "광고를 불러오는 중…"
+  "photoAddAdLoading": "광고를 불러오는 중…",
+  "selectItemsTooltip": "항목 선택",
+  "selectedCount": "{count}개 선택",
+  "@selectedCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "selectAll": "전체 선택",
+  "deselectAll": "선택 해제",
+  "deleteSelectedTitle": "선택 항목 삭제",
+  "deleteSelectedMessage": "선택한 {count}개 항목과 알림을 삭제할까요?",
+  "@deleteSelectedMessage": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "deleteSelected": "선택 삭제",
+  "shareAppTitle": "앱 공유",
+  "shareAppSubtitle": "친구에게 다운로드 링크 보내기",
+  "shareAppMessage": "AI 유통기한 알리미 — 사진으로 식품 유통기한을 관리해요",
+  "shareAppFailed": "공유 실패: {error}",
+  "@shareAppFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  }
 }

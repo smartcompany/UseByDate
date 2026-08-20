@@ -26,11 +26,17 @@ class ProductListTile extends StatelessWidget {
     required this.item,
     required this.notifyDaysBefore,
     required this.onTap,
+    this.selecting = false,
+    this.selected = false,
+    this.onLongPress,
   });
 
   final ProductWithPhoto item;
   final int notifyDaysBefore;
   final VoidCallback onTap;
+  final bool selecting;
+  final bool selected;
+  final VoidCallback? onLongPress;
 
   static const _thumbSize = 72.0;
 
@@ -48,15 +54,27 @@ class ProductListTile extends StatelessWidget {
     };
 
     return Material(
-      color: Colors.transparent,
+      color: selecting && selected
+          ? AppTheme.coral.withValues(alpha: 0.08)
+          : Colors.transparent,
       child: InkWell(
         onTap: onTap,
+        onLongPress: onLongPress,
         borderRadius: BorderRadius.circular(14),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              if (selecting) ...[
+                Checkbox(
+                  value: selected,
+                  onChanged: (_) => onTap(),
+                  visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                const SizedBox(width: 4),
+              ],
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: SizedBox(
@@ -111,10 +129,11 @@ class ProductListTile extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: AppTheme.muted.withValues(alpha: 0.7),
-              ),
+              if (!selecting)
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppTheme.muted.withValues(alpha: 0.7),
+                ),
             ],
           ),
         ),
